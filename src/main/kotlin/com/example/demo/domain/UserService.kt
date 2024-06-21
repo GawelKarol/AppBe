@@ -1,6 +1,7 @@
 // src/main/kotlin/com/example/demo/domain/UserService.kt
 package com.example.demo.domain
 
+import com.example.demo.infrastructure.AuthResponseDto
 import com.example.demo.infrastructure.users.UserEntity
 import com.example.demo.infrastructure.users.UserRepository
 import org.springframework.stereotype.Service
@@ -11,17 +12,20 @@ class UserService(private val userRepository: UserRepository) {
 
     fun getAllUsers(): List<UserDTO> = userRepository.findAll().map { it.toDTO() }
 
-    fun createUser(userDTO: UserDTO) : UserDTO {
+    fun createUser(userDTO: UserDTO): UserDTO {
         userRepository.save(userDTO.toEntityDTO())
         return userDTO.toEntityDTO().toDTO()
     }
 
     fun deleteUser(id: Long) = userRepository.deleteById(id)
 
-    fun authenticateUser(email: String, password: String): String? {
+    fun authenticateUser(email: String, password: String): AuthResponseDto? {
         val user = userRepository.findByEmail(email)
         return if (user != null && user.password == password) {
-            user.role
+            AuthResponseDto(
+                user.role,
+                user.name
+            )
         } else {
             null
         }
@@ -37,7 +41,7 @@ class UserService(private val userRepository: UserRepository) {
     )
 
     private fun UserDTO.toEntityDTO() = UserEntity(
-        id = getAllUsers().size.toLong()+1,
+        id = getAllUsers().size.toLong() + 1,
         name = this.name,
         role = this.role,
         email = this.email,

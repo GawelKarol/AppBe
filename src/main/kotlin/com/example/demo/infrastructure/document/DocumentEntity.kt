@@ -19,8 +19,11 @@ data class DocumentEntity(
     @Column(name = "number", nullable = false)
     val number: String,
 
-    @Column(name = "user", nullable = false)
-    val user: String,
+    @Column(name = "name", nullable = false)
+    val name: String,
+
+    @Column(name = "partner_name", nullable = false)
+    val partnerName: String,
 
     @Column(name = "type", nullable = false)
     val type: String,

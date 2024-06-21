@@ -16,10 +16,18 @@ class InventoryService(private val inventoryRepository: InventoryRepository) {
         return item.toEntityDTO().toDTO()
     }
 
+    fun decrementStockByName(name: String): InventoryEntity? {
+        val inventory = inventoryRepository.findByName(name) ?: return null
+        if (inventory.stock > 0) {
+            val updatedInventory = inventory.copy(stock = inventory.stock - 1)
+            return inventoryRepository.save(updatedInventory)
+        }
+        return null
+    }
+
     private fun InventoryEntity.toDTO() = StorageDTO(
         id = this.id,
         name = this.name,
-        type = this.type,
         stock = this.stock,
         price = this.price
     )
@@ -27,7 +35,6 @@ class InventoryService(private val inventoryRepository: InventoryRepository) {
     private fun StorageDTO.toEntityDTO() = InventoryEntity(
         id = getAllStorage().size.toLong().plus(1),
         name = this.name,
-        type = this.type,
         stock = this.stock,
         price = this.price
     )
@@ -36,7 +43,6 @@ class InventoryService(private val inventoryRepository: InventoryRepository) {
 data class StorageDTO(
     val id: Long,
     val name: String,
-    val type: String,
     val stock: Int,
     val price: Int
 )

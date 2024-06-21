@@ -11,18 +11,29 @@ class DocumentService(private val documentRepository: DocumentRepository) {
 
     fun getAllDocuments(): List<DocumentDTO> = documentRepository.findAll().sortedBy { it.date }.map { it.toDTO() }
 
-private fun DocumentEntity.toDTO() = DocumentDTO(
-    id = this.id,
-    number = this.number,
-    user = this.user,
-    type = this.type,
-    date = this.date
-)
+    fun getDocumentsByName(name: String): List<DocumentDTO> {
+        return documentRepository.findByName(name).sortedBy { it.date }.map { it.toDTO() }
+    }
+
+    fun getDocumentsByPartnerName(partnerName: String): List<DocumentDTO> {
+        return documentRepository.findByPartnerName(partnerName).sortedBy { it.date }.map { it.toDTO() }
+    }
+
+    private fun DocumentEntity.toDTO() = DocumentDTO(
+        id = this.id,
+        number = this.number,
+        user = this.name,
+        partnerName = this.partnerName,
+        type = this.type,
+        date = this.date
+    )
 }
+
 data class DocumentDTO(
     val id: Long,
     val number: String,
     val user: String,
+    val partnerName: String,
     val type: String,
     val date: LocalDate
 )
