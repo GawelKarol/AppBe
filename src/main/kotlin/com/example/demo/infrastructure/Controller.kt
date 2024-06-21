@@ -45,8 +45,18 @@ class Controller(
     }
 
     @PostMapping("/services/partner/change-status/{id}")
-    fun changeStatus(@PathVariable id: Long): ResponseEntity<MechanicServiceEntity> {
-        val updatedService = serviceService.changeStatus(id)
+    fun changePartnerStatus(@PathVariable id: Long): ResponseEntity<MechanicServiceEntity> {
+        val updatedService = serviceService.changePartnerStatus(id)
+        return ResponseEntity.ok(updatedService)
+    }
+    @PostMapping("/services/partner/reject/{id}")
+    fun rejectPartnerStatus(@PathVariable id: Long): ResponseEntity<MechanicServiceEntity> {
+        val updatedService = serviceService.rejectPartnerStatus(id)
+        return ResponseEntity.ok(updatedService)
+    }
+    @PostMapping("/services/client/change-status/{id}")
+    fun changeClientStatus(@PathVariable id: Long): ResponseEntity<MechanicServiceEntity> {
+        val updatedService = serviceService.changeClientStatus(id)
         return ResponseEntity.ok(updatedService)
     }
 

@@ -86,14 +86,35 @@ class ServiceService(
     }
 
     @Transactional
-    fun changeStatus(serviceId: Long): MechanicServiceEntity {
+    fun changePartnerStatus(serviceId: Long): MechanicServiceEntity {
         val service = mechanicServiceRepository.findById(serviceId)
             .orElseThrow { IllegalArgumentException("Service with id $serviceId not found") }
-
-        if (service.status == "Przyjęto twoje zgłoszenie") {
+        if (service.status == "Otrzymaliśmy twoje zgłoszenie") {
+            service.status = "Twoje zgłoszenie zostało potwierdzone"
+        }else if (service.status == "Twoje zgłoszenie zostało potwierdzone") {
             service.status = "Twoje auto zostało przyjęte do serwisu"
         } else if (service.status == "Twoje auto zostało przyjęte do serwisu") {
             service.status = "Twoja naprawa została zakończona"
+        }
+        return mechanicServiceRepository.save(service)
+    }
+
+   @Transactional
+    fun changeClientStatus(serviceId: Long): MechanicServiceEntity {
+        val service = mechanicServiceRepository.findById(serviceId)
+            .orElseThrow { IllegalArgumentException("Service with id $serviceId not found") }
+
+            service.status = "Twoja reklamacja została złożona"
+        return mechanicServiceRepository.save(service)
+    }
+
+    @Transactional
+    fun rejectPartnerStatus(serviceId: Long): MechanicServiceEntity {
+        val service = mechanicServiceRepository.findById(serviceId)
+            .orElseThrow { IllegalArgumentException("Service with id $serviceId not found") }
+
+        if (service.status == "Otrzymaliśmy twoje zgłoszenie") {
+            service.status = "Twoje zgłoszenie zostało odrzucone"
         }
         return mechanicServiceRepository.save(service)
     }
@@ -107,7 +128,7 @@ class ServiceService(
         val newEntity = MechanicServiceEntity(
             id = getAllMechanicServices().size.toLong().plus(1),
             serviceName = service.serviceName,
-            status = "Przyjęto twoje zgłoszenie",
+            status = "Otrzymaliśmy twoje zgłoszenie",
             serviceCost = service.serviceCost.toBigDecimal(),
             appointmentDate = LocalDateTime.parse("${createRequest.appointmentDate}T${createRequest.hour}"),
             partnerName = createRequest.partner,
