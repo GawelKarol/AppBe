@@ -11,21 +11,9 @@ class UserService(private val userRepository: UserRepository) {
 
     fun getAllUsers(): List<UserDTO> = userRepository.findAll().map { it.toDTO() }
 
-    fun getUserById(id: Long): UserDTO = userRepository.findById(id).orElseThrow { RuntimeException("User not found") }.toDTO()
-
     fun createUser(userDTO: UserDTO) : UserDTO {
         userRepository.save(userDTO.toEntityDTO())
         return userDTO.toEntityDTO().toDTO()
-    }
-
-    fun updateUser(id: Long, updatedUser: UserEntity): UserDTO {
-        val existingUser = userRepository.findById(id).orElseThrow { RuntimeException("User not found") }
-        val updated = existingUser.copy(
-            name = updatedUser.name,
-            role = updatedUser.role,
-            registerDate = updatedUser.registerDate
-        )
-        return userRepository.save(updated).toDTO()
     }
 
     fun deleteUser(id: Long) = userRepository.deleteById(id)

@@ -3,9 +3,7 @@ package com.example.demo.domain
 
 import com.example.demo.infrastructure.storage.InventoryEntity
 import com.example.demo.infrastructure.storage.InventoryRepository
-import com.example.demo.infrastructure.users.UserEntity
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 
 @Service
 class InventoryService(private val inventoryRepository: InventoryRepository) {
