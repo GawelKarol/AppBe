@@ -33,21 +33,21 @@ CREATE TABLE inventory
 
 -- Wstawienie przykładowych wpisów
 INSERT INTO inventory (name, stock, price)
-VALUES ('Olej', 10, 100);
+VALUES ('Olej', 10, 7);
 INSERT INTO inventory (name, stock, price)
-VALUES ('Filtr', 20, 200);
+VALUES ('Filtr', 20, 10);
 INSERT INTO inventory (name, stock, price)
-VALUES ('Opona', 30, 300);
+VALUES ('Opona', 30, 50);
 INSERT INTO inventory (name, stock, price)
-VALUES ('Klocki hamulcowe', 40, 400);
+VALUES ('Klocki hamulcowe', 40, 200);
 INSERT INTO inventory (name, stock, price)
-VALUES ('Świece zapłonowe', 50, 500);
+VALUES ('Świece zapłonowe', 50, 50);
 INSERT INTO inventory (name, stock, price)
-VALUES ('Filtr powietrza', 60, 600);
+VALUES ('Filtr powietrza', 60, 50);
 INSERT INTO inventory (name, stock, price)
-VALUES ('Akumulator', 70, 700);
+VALUES ('Akumulator', 70, 200);
 INSERT INTO inventory (name, stock, price)
-VALUES ('Płyn do skrzyni biegów', 80, 800);
+VALUES ('Płyn do skrzyni biegów', 80, 80);
 
 
 -- Tworzenie tabeli

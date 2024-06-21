@@ -16,6 +16,10 @@ class InventoryService(private val inventoryRepository: InventoryRepository) {
         return item.toEntityDTO().toDTO()
     }
 
+    fun getStorageItemByNameList(name: List<String>): List<InventoryEntity?> {
+       return name.map { inventoryRepository.findByName(it) }
+    }
+
     fun decrementStockByName(name: String): InventoryEntity? {
         val inventory = inventoryRepository.findByName(name) ?: return null
         if (inventory.stock > 0) {

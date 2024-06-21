@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.math.absoluteValue
+import kotlin.math.ceil
 import kotlin.random.Random
 
 @Service
@@ -30,7 +31,7 @@ class ServiceService(
         MechanicService(
             2,
             "Wymiana opon",
-            19.99,
+            199.99,
             "2024-07-02",
             listOf("Wylezalek", "AutoParts", "RondoMechanics"),
             listOf("Opona")
@@ -38,15 +39,15 @@ class ServiceService(
         MechanicService(
             3,
             "Inspekcja hamulców",
-            49.99,
+            149.99,
             "2024-07-03",
             listOf("Wylezalek", "AutoParts", "RondoMechanics"),
-            listOf("Klocki hamulcowe")
+            listOf("Klocki hallowed")
         ),
         MechanicService(
             4,
             "Regulacja silnika",
-            99.99,
+            149.99,
             "2024-07-04",
             listOf("Wylezalek", "AutoParts", "RondoMechanics"),
             listOf("Świece zapłonowe", "Filtr powietrza")
@@ -62,13 +63,24 @@ class ServiceService(
         MechanicService(
             6,
             "Kontrola skrzyni biegów",
-            129.99,
+            129.99 + 2,
             "2024-07-06",
             listOf("Wylezalek", "AutoParts", "RondoMechanics"),
             listOf("Płyn do skrzyni biegów")
         )
     )
 
+    val updatedMechanicServices = mechanicServices.map { service ->
+        val commission = 1.10
+        val partsCost = inventoryService.getStorageItemByNameList(service.usedParts)
+            .filterNotNull()
+            .sumOf { it.price }
+
+        val totalCost = (service.serviceCost + partsCost) * commission
+        val roundedTotalCost = ceil(totalCost * 100) / 100
+
+        service.apply { serviceCost = roundedTotalCost }
+    }
     fun getAllMechanicServices(): List<MechanicServiceEntity> {
         return mechanicServiceRepository.findAll()
     }
@@ -82,7 +94,7 @@ class ServiceService(
     }
 
     fun getAllMechanicServicesList(): List<MechanicServiceDTO> {
-        return mechanicServices.map { it.toDTO() }
+        return updatedMechanicServices.map { it.toDTO() }
     }
 
     @Transactional
@@ -120,7 +132,7 @@ class ServiceService(
     }
 
     fun createMechanicService(createRequest: MechanicServiceUpdateRequest) {
-        val service = mechanicServices.find { it.orderId == createRequest.orderId }
+        val service = updatedMechanicServices.find { it.orderId == createRequest.orderId }
             ?: throw RuntimeException("Service not found")
 
         val usedPartsList = service.usedParts.ifEmpty { listOf("Brak części") }
@@ -158,7 +170,7 @@ class ServiceService(
 data class MechanicService(
     val orderId: Int,
     val serviceName: String,
-    val serviceCost: Double,
+    var serviceCost: Double,
     var appointmentDate: String,
     var ourPartners: List<String>,
     val usedParts: List<String>,
